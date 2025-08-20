@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="view_create_stock_picking" model="ir.ui.view">
+        <field name="name">Create Stock Picking</field>
+        <field name="model">create.stock.picking.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Créer Réception">
+                <group>
+                    <field name="purchase_id" />
+                    <field
+                        name="picking_id"
+                        domain="[('purchase_id', '=', purchase_id)]"
+                         options="{'no_create': True, 'no_open': True}"/>
+
+                    <field
+                        name="scheduled_date"
+                        string="Date Planifiée"
+                        invisible="not picking_id"
+                    />
+                    <field
+                        name="location_dest_id"
+                        string="Emplacement Destination"
+                        readonly="picking_id"
+                        groups="stock.group_stock_multi_locations"
+                    />
+                </group>
+                <field name="line_ids" nolabel="1">
+                    <tree create="false" editable="bottom">
+                        <field name="purchase_order_line_id" column_invisible="1" />
+                        <field name="product_id" string="Article"/>
+                        <field name="partner_id" string="Fournisseur"/>
+                        <field name="date_planned" string="Date Réception Prévue"/>
+                        <field name="price_unit" string="P.U."/>
+                        <field name="product_qty" string="Qty Commandée" />
+                        <field name="qty_received" string="Qty Reçue"/>
+                        <field name="qty_in_receipt" string="Qty en Cours"/>
+                        <field name="remaining_qty" string="Qty Restante" />
+                        <field name="qty" string="Qty" />
+                        <field name="product_uom" groups="uom.group_uom" />
+                    </tree>
+                </field>
+                <footer>
+                    <button
+                        name="create_stock_picking"
+                        string="Créer BR"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <button string="Annuler" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_create_manual_stock_picking" model="ir.actions.act_window">
+        <field name="name">Créer BR</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">create.stock.picking.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="purchase.model_purchase_order_line" />
+    </record>
+
+</odoo>

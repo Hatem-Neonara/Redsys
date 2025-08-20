@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.cron" id="employee_data_reminder">
+        <field name="name">Employee Document Expiration</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_hr_employee_document"/>
+        <field name="state">code</field>
+        <field name="code">model.mail_reminder()</field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_employee_document_inherit_form_view">
+        <field name="name">hr.employee.form.view</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <div class="oe_button_box" position="inside">
+                <button class="oe_stat_button" name="document_view" type="object" icon="fa-list-ol">
+                    <field string="Documents" name="document_count" widget="statinfo"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+
+
+    <record model='ir.ui.view' id='employee_document_form_view'>
+        <field name="name">hr.employee.document.form</field>
+        <field name="model">hr.employee.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="employee_ref" string="Employé" options="{'no_edit': True, 'no_create': True}"/>
+                            <field name="document_type" options="{'no_edit': True, 'no_create': True}"/>
+                            <field name="doc_attachment_id" widget="many2many_binary" class="oe_inline"/>
+                        </group>
+                        <group>
+                            <field name="issue_date"/>
+                            <field name="expiry_date"/>
+                            <field name="notification_type"/>
+                            <field name="before_days" modifier="{'invisible': [('notification_type', '=', 'single')]}"/>
+                            <field name="manager_ref" string="Responsable" options="{'no_edit': True, 'no_create': True}"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model='ir.ui.view' id='employee_documents_tree_view'>
+        <field name="name">hr.employee.document.tree</field>
+        <field name="model">hr.employee.document</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="employee_ref" string="Employé"/>
+                <field name="document_type"/>
+                <field name="expiry_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="search_employee_documents" model="ir.ui.view">
+        <field name="name">hr.employee.document.search</field>
+        <field name="model">hr.employee.document</field>
+        <field name="arch" type="xml">
+            <search string="Documents Employé">
+                <group expand="0" string="Group By">
+                    <filter name="Employee" string="Employé" domain="[]" context="{'group_by':'employee_ref'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hr_employee_document_action" model="ir.actions.act_window">
+        <field name="name">Employee Documents</field>
+        <field name="res_model">hr.employee.document</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="employee_documents_tree_view"/>
+        <field name="context">{'search_default_Employee': 1}</field>
+    </record>
+
+    <menuitem id="employe_document_menuitem"
+              name="Documents"
+              parent="hr.menu_hr_employee_payroll"
+              action="nn_hr.hr_employee_document_action"
+              groups="hr.group_hr_manager"/>
+
+
+     <!--    Type de Document-->
+
+    <record id="view_employee_category_form2" model="ir.ui.view">
+        <field name="name">document.type.form</field>
+        <field name="model">document.type</field>
+        <field name="arch" type="xml">
+            <form string="Étiquette d'Employé">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model='ir.ui.view' id='employee_document_tree_view'>
+        <field name="name">document.type.tree</field>
+        <field name="model">document.type</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_employee_document_type_action" model="ir.actions.act_window">
+        <field name="name">Employee Document Types</field>
+        <field name="res_model">document.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="document_types_menuitem"
+              name="Types de Documents Employé"
+              parent="hr.menu_human_resources_configuration"
+              sequence="6"
+              action="nn_hr.hr_employee_document_type_action"
+    />
+
+
+
+    <!--    Document Template-->
+
+    <record model='ir.ui.view' id='hr_document_template_form_view'>
+        <field name="name">hr.document.form</field>
+        <field name="model">hr.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="attach_id" widget="many2many_binary" class="oe_inline"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model='ir.ui.view' id='hr_document_template_tree_view'>
+        <field name="name">hr.document.tree</field>
+        <field name="model">hr.document</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="note" string="Note"/>
+                <field name="company_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_document_template_action" model="ir.actions.act_window">
+        <field name="name">Templates de Document</field>
+        <field name="res_model">hr.document</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref=""/>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Créer le premier modèle de document
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="hr_document_template_menuitem"
+              name="Templates de Document"
+              parent="hr.menu_hr_root"
+              sequence="90"
+              action="nn_hr.hr_document_template_action"
+              groups="hr.group_hr_manager"/>
+</odoo>
+
+
+
+
+
+
+

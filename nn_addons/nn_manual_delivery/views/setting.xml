@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="stock_setting_delivery_view_form" model="ir.ui.view">
+        <field name="name">stock.setting.delivery.form</field>
+        <field name='model'>res.config.settings</field>
+        <field name='inherit_id' ref="stock.res_config_settings_view_form"/>
+        <field name='arch' type="xml">
+            <block name="operations_setting_container" position="inside">
+                <label for="manual_delivery" string="Use Manual Delivery"/>
+                <field name='manual_delivery'/>
+
+                <label for="purchase_manual_delivery" string="Use Manual Reciept"/>
+                <field name="purchase_manual_delivery" string="Use Manual Reciept"/>
+
+            </block>
+        </field>
+    </record>
+</odoo>

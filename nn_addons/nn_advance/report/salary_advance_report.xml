@@ -1,0 +1,232 @@
+<odoo>
+    <data>
+        <record id="paperformat_report_salary_advance_portrait" model="report.paperformat">
+            <field name="name">Rapport d'avance sur salaire - Portrait</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+        <!-- Définition du rapport -->
+        <!--        <record id="action_report_salary_advance" model="ir.actions.report">-->
+        <!--            <field name="name">Rapport d'avance sur salaire PDF</field>-->
+        <!--            <field name="model">salary.advance</field>-->
+        <!--            <field name="report_type">qweb-pdf</field>-->
+        <!--            <field name="report_name">nn_advance.report_salary_advance_template</field>-->
+        <!--            <field name="report_file">nn_advance.report_salary_advance_template</field>-->
+        <!--            <field name="paperformat_id" ref="paperformat_report_salary_advance_portrait"/>-->
+        <!--            <field name="binding_model_id" ref="model_salary_advance"/>-->
+        <!--            <field name="binding_type">report</field>-->
+        <!--        </record>-->
+        <record id="action_report_salary_advance" model="ir.actions.report">
+            <field name="name">Rapport d'avance sur salaire PDF</field>
+            <field name="model">salary.advance</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">nn_advance.report_salary_advance_template</field>
+            <field name="report_file">nn_advance.report_salary_advance_template</field>
+            <field name="paperformat_id" ref="paperformat_report_salary_advance_portrait"/>
+            <field name="binding_model_id" ref="model_salary_advance"/>
+            <field name="binding_type">report</field>
+        </record>
+
+
+        <!-- Template du rapport -->
+        <template id="report_salary_advance_template">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <!-- Header commun -->
+                        <div class="text-center mb-2">
+                            <div style="width: 100%; text-align: center; margin-bottom: 10px;">
+                                <img t-if="o.company_id.logo"
+                                     t-att-src="image_data_uri(o.company_id.logo)"
+                                     style="max-height: 80px; max-width: 400px; margin: 0 auto; display: block;"
+                                     alt="Company Logo"/>
+                            </div>
+
+                            <div class="mt-2" style="border: 1px solid #000; padding: 5px;">
+                                <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                                    <h3 style="margin: 0; font-size: 16px;">Attestation d'Avance sur Salaire</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Premier exemplaire -->
+                        <div>
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <div class="card">
+                                        <div class="card-body"
+                                             style="border: 1px solid #ddd; padding: 5px; min-height: 100px;">
+                                            <div class="mb-1">
+                                                <strong>Référence Avance :</strong>
+                                                <div class="mt-1" t-field="o.name"/>
+                                            </div>
+                                            <div class="mb-1">
+                                                <strong>Nom Employé :</strong>
+                                                <div class="mt-1" t-field="o.employee_id.name"/>
+                                            </div>
+                                            <div>
+                                                <strong>Matricule :</strong>
+                                                <div class="mt-1" t-field="o.employee_id.identification_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="card">
+                                        <div class="card-body"
+                                             style="border: 1px solid #ddd; padding: 5px; min-height: 100px;">
+                                            <div class="mb-1">
+                                                <strong>Date d'avance :</strong>
+                                                <div class="mt-1" t-field="o.date"/>
+                                            </div>
+                                            <div class="mb-1">
+                                                <strong>Date de retenue :</strong>
+                                                <div class="mt-1" t-field="o.date_retenu"/>
+                                            </div>
+                                            <div>
+                                                <strong>Montant :</strong>
+                                                <div class="mt-1" t-field="o.advance"
+                                                     t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body" style="border: 1px solid #ddd; padding: 5px;">
+                                            <strong>Motif de l'avance :</strong>
+                                            <p class="mt-1" t-field="o.reason"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-bordered mt-2" style="font-size: 12px;">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Cachet de l'entreprise</th>
+                                        <th class="text-center">Signature Employé</th>
+                                        <th class="text-center">Signature Responsable RH</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="height: 40px;"></td>
+                                        <td style="height: 40px;"></td>
+                                        <td style="height: 40px;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+
+                        <!-- Ligne de séparation simple -->
+                        <div style="border-top: 1px dashed #000; margin: 10px 0;"></div>
+                        <br/>
+                        <br/>
+                        <br/>
+
+                        <!-- Deuxième exemplaire -->
+                        <div>
+                            <div class="text-center mb-2">
+                                <div style="width: 100%; text-align: center; margin-bottom: 10px;">
+                                    <img t-if="o.company_id.logo"
+                                         t-att-src="image_data_uri(o.company_id.logo)"
+                                         style="max-height: 80px; max-width: 400px; margin: 0 auto; display: block;"
+                                         alt="Company Logo"/>
+                                </div>
+
+                                <div class="mt-2" style="border: 1px solid #000; padding: 5px;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                                        <h3 style="margin: 0; font-size: 16px;">Attestation d'Avance sur Salaire</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <div class="card">
+                                        <div class="card-body"
+                                             style="border: 1px solid #ddd; padding: 5px; min-height: 100px;">
+                                            <div class="mb-1">
+                                                <strong>Référence Avance :</strong>
+                                                <div class="mt-1" t-field="o.name"/>
+                                            </div>
+                                            <div class="mb-1">
+                                                <strong>Nom Employé :</strong>
+                                                <div class="mt-1" t-field="o.employee_id.name"/>
+                                            </div>
+                                            <div>
+                                                <strong>Matricule :</strong>
+                                                <div class="mt-1" t-field="o.employee_id.identification_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="card">
+                                        <div class="card-body"
+                                             style="border: 1px solid #ddd; padding: 5px; min-height: 100px;">
+                                            <div class="mb-1">
+                                                <strong>Date d'avance :</strong>
+                                                <div class="mt-1" t-field="o.date"/>
+                                            </div>
+                                            <div class="mb-1">
+                                                <strong>Date de retenue :</strong>
+                                                <div class="mt-1" t-field="o.date_retenu"/>
+                                            </div>
+                                            <div>
+                                                <strong>Montant :</strong>
+                                                <div class="mt-1" t-field="o.advance"
+                                                     t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body" style="border: 1px solid #ddd; padding: 5px;">
+                                            <strong>Motif de l'avance :</strong>
+                                            <p class="mt-1" t-field="o.reason"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-bordered mt-2" style="font-size: 12px;">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Cachet de l'entreprise</th>
+                                        <th class="text-center">Signature Employé</th>
+                                        <th class="text-center">Signature Responsable RH</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="height: 40px;"></td>
+                                        <td style="height: 40px;"></td>
+                                        <td style="height: 40px;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

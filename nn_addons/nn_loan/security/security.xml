@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+           <!-- Create a new security group for loan management -->
+        <record id="group_loan_manager" model="res.groups">
+            <field name="name">Loan Manager</field>
+            <field name="category_id" ref="base.module_category_human_resources"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+<!--        Loan-->
+
+        <record id="rule_hr_loan" model="ir.rule">
+            <field name="name">Demande de prêt multi-entreprises</field>
+            <field name="model_id" ref="model_hr_loan"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+         </record>
+
+         <record id="rule_hr_loan_line" model="ir.rule">
+            <field name="name">Demande de prêt line multi-entreprises</field>
+            <field name="model_id" ref="model_hr_loan_line"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+         </record>
+
+           <record id="rule_hr_loan_etat_mensuelle" model="ir.rule">
+            <field name="name">Etat mensuelle des prêts multi-entreprises</field>
+            <field name="model_id" ref="model_etat_prets_mensuels"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+         </record>
+
+           <record id="rule_hr_loan_etat_mensuelle_line" model="ir.rule">
+            <field name="name">Etat mensuelle des prêts line multi-entreprises</field>
+            <field name="model_id" ref="model_etat_prets_mensuels_line"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+         </record>
+
+        <record id="hr_loan_manager_rule" model="ir.rule">
+            <field name="name">Modification des formulaires de prêt, comptes et RH</field>
+            <field name="model_id" ref="model_hr_loan"/>
+            <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+
+        <record id="hr_loan_rule" model="ir.rule">
+            <field name="name">Utilisateur : Modifier son propre prêt uniquement</field>
+            <field name="model_id" ref="model_hr_loan"/>
+            <field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="groups" eval="[(4,ref('base.group_user'))]"/>
+        </record>
+
+      <!-- Custom rule for loan and advance managers -->
+        <record id="hr_loan_loan_advance_manager_rule" model="ir.rule">
+            <field name="name">Gestionnaire prêts et avances: Accès total aux prêts</field>
+            <field name="model_id" ref="model_hr_loan"/>
+            <field name="groups" eval="[(4, ref('group_loan_manager'))]"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+               <!-- Access Rights for Models -->
+        <record id="access_hr_loan_loan_advance_manager" model="ir.model.access">
+            <field name="name">hr.loan.loan.advance.manager</field>
+            <field name="model_id" ref="model_hr_loan"/>
+            <field name="group_id" ref="group_loan_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+
+    </data>
+</odoo>

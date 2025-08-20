@@ -1,0 +1,41 @@
+<odoo>
+    <record id="view_form_taux_dd" model="ir.ui.view">
+        <field name="name">taux.dd.form</field>
+        <field name="model">taux.dd</field>
+        <field name="arch" type="xml">
+            <form string="Taux de Douane">
+                <group>
+                    <field name="name"/>
+                    <field name="description"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tree_taux_dd" model="ir.ui.view">
+        <field name="name">taux.dd.tree</field>
+        <field name="model">taux.dd</field>
+        <field name="arch" type="xml">
+            <tree string="Taux de Douane">
+                <field name="name" widget="percentage"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+       <!-- Action de fenêtre -->
+    <record id="action_taux_dd" model="ir.actions.act_window">
+        <field name="name">Taux de Douane</field>
+        <field name="res_model">taux.dd</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Ajouter et gérer les taux de douane.</p>
+        </field>
+    </record>
+
+    <!-- Sous-menu dans Facturation > Configuration -->
+    <menuitem id="menu_config_taux_dd"
+              name="Taux de Douane"
+              parent="account.menu_finance_configuration"
+              action="action_taux_dd"
+              sequence="25"/>
+</odoo>

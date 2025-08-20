@@ -1,0 +1,124 @@
+<odoo>
+    <record id="paperformat_etat_prets_mensuels_portrait" model="report.paperformat">
+        <field name="name">État des Prêts Mensuels - Portrait</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">20</field>
+        <field name="margin_right">20</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+    <!-- Report for EtatPretsMensuels -->
+    <record id="report_etat_prets_mensuels" model="ir.actions.report">
+        <field name="name">État des Prêts Mensuels</field>
+        <field name="model">etat.prets.mensuels</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">nn_loan.report_etat_prets_mensuels_document</field>
+        <field name="report_file">nn_loan.report_etat_prets_mensuels_document</field>
+        <field name="binding_model_id" ref="model_etat_prets_mensuels"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- QWeb Report Templates -->
+    <template id="report_etat_prets_mensuels_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center">État des Prêts Mensuels</h2>
+                        <div class="row mt32 mb32">
+                            <div class="col-3">
+                                <strong>Rapport:</strong>
+                                <span t-field="doc.name"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>Mois:</strong>
+                                <span t-field="doc.mois"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>Année:</strong>
+                                <span t-field="doc.annee"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>État:</strong>
+                                <span t-field="doc.state"/>
+                            </div>
+                        </div>
+                        <!-- Employee Filter Display (if applicable) -->
+                        <div t-if="doc.employee_id" class="row">
+                            <div class="col-12">
+                                <strong>Filtré par employé:</strong>
+                                <span t-field="doc.employee_id.name"/>
+                            </div>
+                        </div>
+
+                        <h4 class="mt16">Détails des Prêts</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Matricule</th>
+                                    <th>Employé</th>
+                                    <th>Département</th>
+                                    <th>Date Prêt</th>
+                                    <th>Montant Total</th>
+                                    <th>Nbr Échéances</th>
+                                    <th>Montant Échéance</th>
+                                    <th>Date Échéance</th>
+                                    <th>Montant Restant</th>
+                                    <th>Payé</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.journal_prets_line_ids" t-as="line">
+                                    <td><span t-field="line.matricule"/></td>
+                                    <td><span t-field="line.employe_id.name"/></td>
+                                    <td><span t-field="line.department"/></td>
+                                    <td><span t-field="line.date_pret"/></td>
+                                    <td><span t-field="line.montant_total_pret"/></td>
+                                    <td><span t-field="line.nbr_echeances"/></td>
+                                    <td><span t-field="line.montant_echeance"/></td>
+                                    <td><span t-field="line.date_echeance"/></td>
+                                    <td><span t-field="line.montant_restant"/></td>
+                                    <td><span t-field="line.paye"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Summary Section -->
+                        <div class="row mt32">
+                            <div class="col-12">
+                                <h4>Résumé</h4>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Total Montant des Prêts:</strong></td>
+                                        <td class="text-right">
+                                            <span t-esc="sum(line.montant_total_pret for line in doc.journal_prets_line_ids)"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total des Échéances à Payer:</strong></td>
+                                        <td class="text-right">
+                                            <span t-esc="sum(line.montant_echeance for line in doc.journal_prets_line_ids)"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Montant Restant:</strong></td>
+                                        <td class="text-right">
+                                            <span t-esc="sum(line.montant_restant for line in doc.journal_prets_line_ids)"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

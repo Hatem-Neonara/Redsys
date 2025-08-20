@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_crm_initial_product_list_user,access.crm.initial.product.list.user,model_crm_initial_product_list,base.group_user,1,1,1,1
+access_crm_final_product_list_user,access.crm.final.product.list.user,model_crm_final_product_list,base.group_user,1,1,1,1
+
+
+access_taux_dd,taux.dd,model_taux_dd,base.group_user,1,1,1,1
+
+
+access_crm_lead_point_estimation_product_user,access_crm_lead_point_estimation_product_user,model_crm_lead_estimation_product,,1,1,1,1

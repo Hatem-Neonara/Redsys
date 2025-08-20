@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="account_invoice_form_stamp" model="ir.ui.view">
+        <field name="name">account.invoice.form.stamp</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+
+
+
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_stamp_exempt"/>
+            </xpath>
+
+<!--            <xpath expr="//page//tree//field[@name='tax_ids']" position="after">-->
+<!--                &lt;!&ndash; Ajouter le champ 'is_stamp_tax' (il peut être invisible mais doit être présent pour que la logique fonctionne) &ndash;&gt;-->
+<!--                <field name="is_stamp_tax" column_invisible="True"/>-->
+<!--            </xpath>-->
+
+<!--           &lt;!&ndash; Rendre les lignes de timbre invisibles &ndash;&gt;-->
+<!--            <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">-->
+<!--                <attribute name="decoration-muted">is_stamp_tax</attribute>-->
+<!--            </xpath>-->
+
+<!--             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="attributes">-->
+<!--                <attribute name="invisible">is_stamp_tax</attribute>-->
+<!--            </xpath>-->
+
+<!--             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="attributes">-->
+<!--                <attribute name="invisible">is_stamp_tax</attribute>-->
+<!--            </xpath>-->
+
+<!--             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="attributes">-->
+<!--                <attribute name="invisible">is_stamp_tax</attribute>-->
+<!--            </xpath>-->
+
+<!--             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="attributes">-->
+<!--                <attribute name="invisible">is_stamp_tax</attribute>-->
+<!--            </xpath>-->
+
+<!--            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="attributes">-->
+<!--                <attribute name="invisible">is_stamp_tax</attribute>-->
+<!--            </xpath>-->
+
+<!--             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="attributes">-->
+<!--                <attribute name="invisible">is_stamp_tax</attribute>-->
+<!--             </xpath>-->
+<!--                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='tax_ids']" position="attributes">-->
+<!--                <attribute name="invisible">is_stamp_tax</attribute>-->
+
+<!--            </xpath>-->
+
+<!--             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="attributes">-->
+<!--                <attribute name="invisible">is_stamp_tax</attribute>-->
+<!--            </xpath>-->
+
+<!--             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='discount']" position="attributes">-->
+<!--                <attribute name="invisible">is_stamp_tax</attribute>-->
+<!--            </xpath>-->
+
+<!--             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_total']" position="attributes">-->
+<!--                <attribute name="invisible">is_stamp_tax</attribute>-->
+<!--            </xpath>-->
+
+
+        </field>
+    </record>
+
+
+</odoo>

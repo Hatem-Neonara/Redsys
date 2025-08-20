@@ -1,0 +1,20 @@
+<odoo>
+
+    <record id="view_move_form_inherit_payment_alert" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.payment.alert</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <!-- Ajouter une alerte dans la vue de la facture -->
+            <xpath expr="//header" position="before">
+                <field name="is_payment_delayed" invisible="1" />
+                <div class="oe_button_box" invisible="not is_payment_delayed">
+                    <div class="alert alert-danger" >
+                        <strong>Attention !</strong> Cette facture est en retard de paiement.
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="etat_avances_non_payees_tree" model="ir.ui.view">
+        <field name="name">etat.avances.non.payees.tree</field>
+        <field name="model">etat.avances.non.payees</field>
+        <field name="arch" type="xml">
+            <tree string="État des avances non payées">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="total_amount"/>
+                <field name="state"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="etat_avances_non_payees_form" model="ir.ui.view">
+        <field name="name">etat.avances.non.payees.form</field>
+        <field name="model">etat.avances.non.payees</field>
+        <field name="arch" type="xml">
+            <form string="État des avances non payées">
+                <header>
+                    <button name="generate_lines"
+                            string="Générer les lignes"
+                            type="object"
+                            invisible="state != 'draft'"/>
+                    <button name="action_draft"
+                            string="Remettre en brouillon"
+                            type="object"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_print_report"
+                            string="Imprimer"
+                            type="object"
+                            invisible="state != 'confirmed'"/>
+                    <field name="state"
+                           widget="statusbar"
+                           options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="total_amount"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes d'avance" name="advance_lines">
+                            <field name="avances_line_ids" readonly="state == 'confirmed'">
+                                <tree>
+                                    <field name="employee_id"/>
+                                    <field name="matricule"/>
+                                    <field name="department_id"/>
+                                    <field name="date_avance"/>
+                                    <field name="date_retenu"/>
+                                    <field name="montant"/>
+                                    <field name="days_pending"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="etat_avances_non_payees_search" model="ir.ui.view">
+        <field name="name">etat.avances.non.payees.search</field>
+        <field name="model">etat.avances.non.payees</field>
+        <field name="arch" type="xml">
+            <search string="Recherche des avances">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <filter string="Brouillon" name="draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmé" name="confirm"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Validé" name="done"
+                        domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="État" name="state"
+                            domain="[]" context="{'group_by': 'state'}"/>
+                    <filter string="Date de début" name="date_from"
+                            domain="[]" context="{'group_by': 'date_from'}"/>
+                    <filter string="Date de fin" name="date_to"
+                            domain="[]" context="{'group_by': 'date_to'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_etat_avances_non_payees" model="ir.actions.act_window">
+        <field name="name">État des avances non payées</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">etat.avances.non.payees</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="etat_avances_non_payees_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun état d'avance trouvé
+            </p>
+            <p>
+                Créez votre premier état d'avance non payée
+            </p>
+        </field>
+    </record>
+
+    <record id="seq_unpaid_advance_report" model="ir.sequence">
+    <field name="name">Séquence État Avances Non Payées</field>
+    <field name="code">unpaid.advance.report.seq</field>
+    <field name="prefix">ANP/</field>
+    <field name="padding">4</field>
+</record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_etat_avances_non_payees"
+              name="États des avances non payées"
+              parent="parent_menu_salary_advance"
+              action="action_etat_avances_non_payees"
+              sequence="100"/>
+</odoo>

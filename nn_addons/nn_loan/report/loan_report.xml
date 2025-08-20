@@ -1,0 +1,334 @@
+<odoo>
+    <data>
+        <!-- Paper format definition -->
+        <record id="paperformat_report_loan_portrait" model="report.paperformat">
+            <field name="name">Rapport de prêt - Portrait</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">20</field>
+            <field name="margin_right">20</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!-- Report action definition -->
+        <record id="action_report_loan" model="ir.actions.report">
+            <field name="name">Rapport de prêt</field>
+            <field name="model">hr.loan</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">nn_loan.report_loan_template</field>
+            <field name="report_file">nn_loan.report_loan_template</field>
+            <field name="paperformat_id" ref="paperformat_report_loan_portrait"/>
+            <field name="binding_model_id" ref="model_hr_loan"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- Report template -->
+        <template id="report_loan_template">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <!-- Header -->
+                        <div class="text-center mb-4">
+                            <div style="width: 100%; text-align: center; margin-bottom: 20px;">
+                                <img t-if="o.company_id.logo"
+                                     t-att-src="image_data_uri(o.company_id.logo)"
+                                     style="max-height: 100px; max-width: 500px; margin: 0 auto; display: block;"
+                                     alt="Company Logo"/>
+                            </div>
+
+                            <div class="mt-3" style="border: 1px solid #000; padding: 10px;">
+                                <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                                    <h3 style="margin: 0;">Attestation de Prêt</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- First copy -->
+                        <div style="page-break-inside: avoid;">
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <div class="card">
+                                        <div class="card-body"
+                                             style="border: 1px solid #ddd; padding: 10px; min-height: 120px;">
+                                            <div class="mb-2">
+                                                <strong>Référence Prêt :</strong>
+                                                <div class="mt-1" t-field="o.name"/>
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Nom Employé :</strong>
+                                                <div class="mt-1" t-field="o.employee_id.name"/>
+                                            </div>
+                                            <div>
+                                                <strong>Département :</strong>
+                                                <div class="mt-1" t-field="o.department_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="card">
+                                        <div class="card-body"
+                                             style="border: 1px solid #ddd; padding: 10px; min-height: 120px;">
+                                            <div class="mb-2">
+                                                <strong>Date du prêt :</strong>
+                                                <div class="mt-1" t-field="o.date"/>
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Montant du prêt :</strong>
+                                                <div class="mt-1" t-field="o.loan_amount"
+                                                     t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </div>
+                                            <div>
+                                                <strong>Nombre d'échéances :</strong>
+                                                <div class="mt-1" t-field="o.installment"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Loan installments table -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body" style="border: 1px solid #ddd; padding: 10px;">
+                                            <strong>Échéancier de remboursement :</strong>
+                                            <table class="table table-sm mt-2">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Montant</th>
+                                                        <th>Statut</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr t-foreach="o.loan_lines" t-as="line">
+                                                        <td>
+                                                            <span t-field="line.date"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-field="line.amount"
+                                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-if="line.paid">Payé</span>
+                                                            <span t-else="">Non payé</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total amounts -->
+                            <div class="row mt-4 mb-4">
+                                <div class="col-6 offset-6">
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td><strong>Montant total :</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Montant payé :</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="o.total_paid_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Reste à payer :</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="o.balance_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Signature table -->
+                            <table class="table table-bordered mt-3">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Cachet de l'entreprise</th>
+                                        <th class="text-center">Signature Employé</th>
+                                        <th class="text-center">Signature Responsable RH</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="height: 50px;"></td>
+                                        <td style="height: 50px;"></td>
+                                        <td style="height: 50px;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+
+                        <!-- Ligne de séparation -->
+                        <div style="border-top: 2px dashed #000; margin: 20px 0;"></div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+
+                        <!-- Second copy -->
+                        <div style="page-break-inside: avoid;">
+                            <!-- Header pour le deuxième exemplaire -->
+                            <div class="text-center mb-4">
+                                <div style="width: 100%; text-align: center; margin-bottom: 20px;">
+                                    <img t-if="o.company_id.logo"
+                                         t-att-src="image_data_uri(o.company_id.logo)"
+                                         style="max-height: 100px; max-width: 500px; margin: 0 auto; display: block;"
+                                         alt="Company Logo"/>
+                                </div>
+
+                                <div class="mt-3" style="border: 1px solid #000; padding: 10px;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                                        <h3 style="margin: 0;">Attestation de Prêt</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Deuxième exemplaire - contenu identique -->
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <div class="card">
+                                        <div class="card-body"
+                                             style="border: 1px solid #ddd; padding: 10px; min-height: 120px;">
+                                            <div class="mb-2">
+                                                <strong>Référence Prêt :</strong>
+                                                <div class="mt-1" t-field="o.name"/>
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Nom Employé :</strong>
+                                                <div class="mt-1" t-field="o.employee_id.name"/>
+                                            </div>
+                                            <div>
+                                                <strong>Département :</strong>
+                                                <div class="mt-1" t-field="o.department_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="card">
+                                        <div class="card-body"
+                                             style="border: 1px solid #ddd; padding: 10px; min-height: 120px;">
+                                            <div class="mb-2">
+                                                <strong>Date du prêt :</strong>
+                                                <div class="mt-1" t-field="o.date"/>
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Montant du prêt :</strong>
+                                                <div class="mt-1" t-field="o.loan_amount"
+                                                     t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </div>
+                                            <div>
+                                                <strong>Nombre d'échéances :</strong>
+                                                <div class="mt-1" t-field="o.installment"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Loan installments table - 2nd copy -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body" style="border: 1px solid #ddd; padding: 10px;">
+                                            <strong>Échéancier de remboursement :</strong>
+                                            <table class="table table-sm mt-2">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Montant</th>
+                                                        <th>Statut</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr t-foreach="o.loan_lines" t-as="line">
+                                                        <td>
+                                                            <span t-field="line.date"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-field="line.amount"
+                                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-if="line.paid">Payé</span>
+                                                            <span t-else="">Non payé</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total amounts - 2nd copy -->
+                            <div class="row mt-4 mb-4">
+                                <div class="col-6 offset-6">
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td><strong>Montant total :</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Montant payé :</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="o.total_paid_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Reste à payer :</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="o.balance_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Signature table - 2nd copy -->
+                            <table class="table table-bordered mt-3">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Cachet de l'entreprise</th>
+                                        <th class="text-center">Signature Employé</th>
+                                        <th class="text-center">Signature Responsable RH</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="height: 50px;"></td>
+                                        <td style="height: 50px;"></td>
+                                        <td style="height: 50px;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="add_information_res_company" model="ir.ui.view">
+        <field name="name">add.information.res.company</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//group[@name='social_media']" position="before">
+                <group string="Bank Information" name="bank">
+
+                    <field name="company_bank" options="{'no_open':True,'no_create': True}"/>
+                    <field name="bank_company_id"/>
+                    <field name="bank_company_account"/>
+                    <field name="agence_id"/>
+                </group>
+            </xpath>
+
+            <xpath expr="//group[@name='social_media']" position="after">
+                <group string="Signature" name="sign">
+                    <field name="purchase_sign"/>
+                    <field name="sale_sign"/>
+
+                </group>
+            </xpath>
+
+            <xpath expr="//group[@name='social_media']" position="before">
+                <group string="Information Fiscal" name="fiscal">
+                </group>
+            </xpath>
+
+            <xpath expr="//group[@name='fiscal']" position="after">
+                <group string="Information Social" name="social">
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

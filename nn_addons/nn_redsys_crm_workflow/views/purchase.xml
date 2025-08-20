@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_purchase_order_form_inherit_custom" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.custom</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+
+            <xpath expr="//sheet" position="inside">
+                <field name="crm_lead_id" invisible="0"/>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="before">
+                <field name="barcode" string="PN"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <!-- search view product -->
+
+    <record id="inherit_product_template_search_add_barcode" model="ir.ui.view">
+        <field name="name">product.template.search.inherit.add.barcode</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <!-- Add barcode after default_code -->
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="barcode" string="PN"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_purchase_rfq_form_inherit_custom" model="ir.ui.view">
+        <field name="name">purchase.rfq.form.inherit.custom</field>
+        <field name="model">purchase.rfq</field>
+        <field name="inherit_id" ref="purchase.purchase_rfq_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='button_creat_po']" position="replace">
+                <button name="button_creat_po" type="object" string="Créer PO"
+                        invisible="state != 'rfq' or not sale_quotation_confirmed"
+                        groups="purchase.group_purchase_manager" class="btn-primary" data-hotkey="l"/>
+                <button name="action_confirm_sale" class="primary" type="object" string="Confirme Vente"
+                        invisible="state != 'rfq' or sale_quotation_confirmed"
+                        />
+            </xpath>
+
+            <!-- Exemple : Ajouter un champ après le champ name -->
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <label for="crm_lead_id"/>
+                <div name="crm_lead_id">
+                    <field name="crm_lead_id" readonly="1"/>
+
+                </div>
+                <field name="currency_id"/>
+
+            </xpath>
+
+            <xpath expr="//sheet/div/button" position="after">
+                <field name="crm_lead_exist" invisible="1"/>
+                <field name="sale_quotation_confirmed" invisible="1"/>
+
+
+                <button name="action_view_crm"
+                        type="object"
+                        string="CRM"
+                        class="oe_stat_button"
+                        icon="fa-file-text-o"
+                        invisible="not crm_lead_exist">
+
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="after">
+                <field name="barcode" string="PN"/>
+            </xpath>
+
+
+            <xpath expr="//field[@name='order_line']/tree//field[@name='product_qty']" position="after">
+                <field name="price_unit" string="Prix Unitaire" invisible="state in ('draft','sent')"/>
+                <field name="currency_id" invisible="0"/>
+            </xpath>
+
+
+        </field>
+    </record>
+</odoo>
