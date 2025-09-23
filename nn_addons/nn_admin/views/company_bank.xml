@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="company_bank_tree_view" model="ir.ui.view">
+        <field name="name">company.bank.tree.view</field>
+        <field name="model">company.bank</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" required="1"/>
+                <field name="bank_company_account" required="1"/>
+                <field name="agence_id" required="1"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="company_bank_form_view" model="ir.ui.view">
+        <field name="name">company.bank.form.view</field>
+        <field name="model">company.bank</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title oe_left">
+                        <h2>
+                            <group>
+                                <field name="name" string="Bank" required="1"/>
+                            </group>
+                        </h2>
+                    </div>
+                    <group>
+                        <field name="bank_company_account" required="1"/>
+                        <field name="agence_id" required="1"/>
+                        <field name="iban"/>
+                        <field name="company_id" groups="base.group_multi_company"
+                               options="{'no_open':True,'no_create': True}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="company_bank_search_view" model="ir.ui.view">
+        <field name="name">company.bank.search</field>
+        <field name="model">company.bank</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Bank"/>
+                <group string="Group By">
+                    <filter string="Company Bank" name="company" domain="[]" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+
+        </field>
+    </record>
+
+    <record id="action_company_bank" model="ir.actions.act_window">
+        <field name="name">Company Bank</field>
+        <field name="res_model">company.bank</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="search_view_id" ref="company_bank_search_view"/>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="company_bank" parent="base.menu_users" name="Company Bank" action="action_company_bank"
+              sequence="20"/>
+
+    <record id="company_bank_rule_multi_company" model="ir.rule">
+        <field name="name">Company Bank: restrict by company</field>
+        <field name="model_id" ref="nn_admin.model_company_bank"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+</odoo>

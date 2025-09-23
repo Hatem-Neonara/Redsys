@@ -1,0 +1,124 @@
+<odoo>
+    <!-- Tree View for EtatPretsMensuels -->
+    <record id="view_etat_prets_mensuels_tree" model="ir.ui.view">
+        <field name="name">etat.prets.mensuels.tree</field>
+        <field name="model">etat.prets.mensuels</field>
+        <field name="arch" type="xml">
+            <tree string="État des Prêts Mensuels">
+                <field name="name"/>
+                <field name="mois"/>
+                <field name="annee"/>
+                <field name="state"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View for EtatPretsMensuels -->
+    <record id="view_etat_prets_mensuels_form" model="ir.ui.view">
+        <field name="name">etat.prets.mensuels.form</field>
+        <field name="model">etat.prets.mensuels</field>
+        <field name="arch" type="xml">
+            <form string="État des Prêts Mensuels">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="generate_prets_lines" type="object" string="Générer les Lignes de Prêts"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="update" type="object" string="Mise à jour"
+                            class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="%(nn_loan.report_etat_prets_mensuels)d"
+                            string="Imprimer PDF"
+                            type="action"
+                            class="oe_highlight"/>
+
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="mois"/>
+                            <field name="annee"/>
+                        </group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="is_amount_empty" invisible="1"/>
+                            <field name="company_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Notebook Tab for Loan Lines -->
+                    <notebook>
+                        <page string="Lignes des Prêts">
+                            <field name="journal_prets_line_ids">
+                                <tree string="Lignes des Prêts" editable="bottom">
+                                    <field name="matricule"/>
+                                    <field name="employe_id"/>
+                                    <field name="department"/>
+                                    <field name="date_pret"/>
+                                    <field name="montant_total_pret" digits="[0, 3]"/>
+                                    <field name="nbr_echeances"/>
+                                    <field name="montant_echeance" digits="[0, 3]"/>
+                                    <field name="date_echeance"/>
+                                    <field name="montant_restant" digits="[0, 3]"/>
+                                    <field name="paye" string="Payé"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View for EtatPretsMensuels -->
+    <record id="view_etat_prets_mensuels_search" model="ir.ui.view">
+        <field name="name">etat.prets.mensuels.search</field>
+        <field name="model">etat.prets.mensuels</field>
+        <field name="arch" type="xml">
+            <search string="Recherche de Prêts Mensuels">
+                <field name="name"/>
+                <field name="mois"/>
+                <field name="annee"/>
+                <field name="state"/>
+                <!-- Filter by employee in the lines -->
+                <field name="journal_prets_line_ids" string="Employé"
+                       filter_domain="[('journal_prets_line_ids.employe_id', 'ilike', self)]"/>
+                <!-- Add a specific filter for employee -->
+                <filter string="Mes Employés" name="my_employees"
+                        domain="[('journal_prets_line_ids.employe_id.user_id', '=', uid)]"/>
+                <!-- Group by options -->
+                <group expand="0" string="Grouper par">
+                    <filter string="Mois" name="group_by_mois" context="{'group_by': 'mois'}"/>
+                    <filter string="Année" name="group_by_annee" context="{'group_by': 'annee'}"/>
+                    <filter string="État" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for EtatPretsMensuels -->
+    <record id="action_etat_prets_mensuels_tree" model="ir.actions.act_window">
+        <field name="name">État des Prêts Mensuels</field>
+        <field name="res_model">etat.prets.mensuels</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_etat_prets_mensuels"
+              name="État des Prêts Mensuels"
+              parent="menu_base_hr_loan_request"
+              action="action_etat_prets_mensuels_tree"
+              sequence="4"/>
+
+     <!-- Séquence  -->
+    <record id="ir_seq_etat_loan" model="ir.sequence">
+        <field name="name">Demande de Prêt</field>
+        <field name="code">loan.report.seq</field>
+        <field name="prefix">Rapport Prêt - %(y)s - </field>
+        <field name="padding">3</field>
+        <field name="number_increment">1</field>
+        <field name="number_next_actual">1</field>
+        <field name="use_date_range" eval="True"/>
+        <field name="implementation">standard</field>
+    </record>
+</odoo>

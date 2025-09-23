@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Create a new security group for advance management -->
+        <record id="group_advance_manager" model="res.groups">
+            <field name="name">Advance Manager</field>
+            <field name="category_id" ref="base.module_category_human_resources"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <!--        Avance-->
+
+        <record id="rule_advance_salary_multi_company" model="ir.rule">
+            <field name="name">Demande d'avance multi-entreprises</field>
+            <field name="model_id" ref="model_salary_advance"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="rule_etat_advance_salary_multi_company" model="ir.rule">
+            <field name="name">Etat d'avance multi-entreprises</field>
+            <field name="model_id" ref="model_etat_avances_mensuelles"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="rule_etat_advance_np_salary_multi_company" model="ir.rule">
+            <field name="name">Etat d'avance non payé multi-entreprises</field>
+            <field name="model_id" ref="model_etat_avances_non_payees"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="hr_salary_advance_manager_rule" model="ir.rule">
+            <field name="name">Avance sur salaire</field>
+            <field name="model_id" ref="model_salary_advance"/>
+            <field name="groups" eval="[(4, ref('hr.group_hr_user')),(4, ref('hr.group_hr_user')), (4, ref('group_advance_manager'))]"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="hr_salary_advance_employee_rule" model="ir.rule">
+            <field name="name">Règle d'avance sur salaire pour les employés</field>
+            <field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+            <field name="global" eval="True"/>
+            <field name="model_id" ref="model_salary_advance"/>
+            <field name="groups" eval="[(4, ref('hr.group_hr_user')),(4, ref('hr.group_hr_user')), (4, ref('group_advance_manager'))]"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+
+        <record id="access_salary_advance_loan_advance_manager" model="ir.model.access">
+            <field name="name">salary.advance.loan.advance.manager</field>
+            <field name="model_id" ref="model_salary_advance"/>
+            <field name="group_id" ref="group_advance_manager"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+    </data>
+</odoo>

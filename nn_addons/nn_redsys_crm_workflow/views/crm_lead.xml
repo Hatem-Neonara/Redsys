@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_crm_lead_form_inherit_custom" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit.custom</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header/button[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+
+            <!-- Exemple : Ajouter un champ après le champ name -->
+            <xpath expr="//header" position="inside">
+                <field name="sale_quotation_created" invisible="1"/>
+                <button name="action_create_quotation"
+                        type="object"
+                        string="Créer un Devis"
+                        class="btn-primary"/>
+                <button name="action_create_rfq"
+                        type="object"
+                        string="Créer RFQ"
+                        class="btn-primary"
+                        invisible="not final_product_list_generated or rfq_created"
+                />
+                <button name="action_generate_final_product_lines"
+                        type="object"
+                        string="Générer la liste final des produits"
+                        class="btn-primary"
+                        invisible="final_product_list_generated"
+                />
+                <field name="rfq_created" invisible="1"/>
+
+
+                <field name="final_product_list_generated" invisible="1"/>
+                <field name="purchase_rfq_ids" invisible="1"/>
+                <field name="purchase_order_ids" invisible="1"/>
+            </xpath>
+            <xpath expr="//sheet/div/button" position="after">
+                <field name="rfq_created" invisible="1"/>
+
+                <button name="action_view_rfqs"
+                        type="object"
+                        string="Consulter RFQ"
+                        class="oe_stat_button"
+                        icon="fa-file-text-o"
+                        invisible="not rfq_created">
+
+                </button>
+
+
+                <field name="purchase_order_created" invisible="1"/>
+                <button name="action_view_purchase_rfq"
+                        string="Consulter PO"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-shopping-cart"
+                        invisible="not purchase_order_created">
+
+                </button>
+            </xpath>
+            <xpath expr="//sheet/group/group[2]" position="inside">
+                <field name="currency_id"/>
+
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="initial_product_list" string="Liste initiale des produits"
+                      invisible="final_product_list_generated">
+                    <field name="initial_product_list_ids">
+                        <tree editable="bottom">
+                            <field name="detailed_type"/>
+
+                            <field name="name" invisible="detailed_type == 'service'"/>
+                            <field name="product_id" invisible="detailed_type != 'service'"
+                                   domain="[('detailed_type','=','service')]"/>
+                            <field name="barcode" readonly="detailed_type == 'service'"/>
+                            <field name="description"/>
+                            <field name="quantity"/>
+                            <field name="taux_tva" widget="many2many_tags"/>
+                            <field name="unit_of_measure_id"/>
+                        </tree>
+                    </field>
+                </page>
+                <page name="final_product_list" string="Liste Finale des Produits"
+                      invisible="not final_product_list_generated">
+                    <field name="final_product_list_ids">
+                        <tree editable="bottom">
+                            <field name="detailed_type" column_invisible="1"/>
+
+                            <field name="barcode" string="PN"/>
+                            <field name="product_id"/>
+                            <field name="description"/>
+                            <field name="quantity"/>
+                            <field name="uom_id"/>
+                            <field name="price_unit"/>
+                        </tree>
+                    </field>
+                </page>
+
+                <page string="Estimations Produits" invisible="not order_line">
+                    <field name="estimation_product_ids">
+                        <tree editable="bottom">
+                            <field name="pn" width="100px"/>
+                            <field name="product_id" width="100px"/>
+                            <field name="quantity" width="100px"/>
+                            <field name="currency_id" invisible="0" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="taux_change" width="100px" optional="hide"/>
+                            <field name="prix_unitaire" width="100px"/>
+                            <field name="total_devis" width="100px" sum="Prix Tot devis"/>
+                            <field name="total_dinar" width="100px" sum="Prix Tot DT"/>
+                            <field name="estimation_transport_devis" width="100px"/>
+                            <field name="estimation_transport_dinar" width="100px" sum="Tot Transport DT"/>
+                            <field name="taux_dd_id" width="100px" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="fee_dd" width="100px" sum="Tot DD"/>
+                            <field name="taux_change" width="100px"/>
+                            <field name="transit" width="100px" sum="Tot Transit DT"/>
+                            <field name="cert" width="100px" sum="Tot Cert DT"/>
+                            <field name="prix_revient" width="100px" sum="Tot Prix Revient"/>
+                            <field name="margin_percentage" width="100px" widget="percentage"/>
+                            <field name="margin" width="100px" sum="Tot Margin"/>
+                            <field name="prix_final" width="100px" sum="Tot Prix Final DT"/>
+                            <field name="price_unit" width="100px"/>
+                        </tree>
+
+                    </field>
+                </page>
+
+                <page string="Lignes PO" name="purchase_rfq_lines" invisible="not order_line">
+                    <field name="order_line" readonly="1">
+                        <tree>
+                            <field name="order_id"/>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="date_planned"/>
+                            <field name="barcode"/>
+                            <field name="price_unit"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom"/>
+                        </tree>
+                    </field>
+                </page>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

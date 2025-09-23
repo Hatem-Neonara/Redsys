@@ -1,0 +1,23 @@
+
+
+<odoo>
+    <record id="view_employee_nn_inherit_hr_form" model="ir.ui.view">
+        <field name="name">employee.nn.inherit.hr.view.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Employee status buttons -->
+            <xpath expr="//header" position="inside">
+                <button name="action_set_actif" string="Actif" type="object"
+                        invisible="state_employee == 'actif'"/>
+                <button name="action_set_tempinactif" string="Temporairement Inactif" type="object"
+                        invisible="state_employee == 'tempinactif'"/>
+                <button name="action_set_inactif" string="Inactif" type="object"
+                        invisible="state_employee == 'inactif'"/>
+                <field name="state_employee" widget="statusbar"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

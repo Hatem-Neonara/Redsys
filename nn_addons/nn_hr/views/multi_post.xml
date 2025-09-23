@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+	<record model="ir.actions.act_window" id="action_hr_job_acting_employee">
+		<field name="name">Employés par interim</field>
+		<field name="res_model">hr.employee</field>
+		<field name="view_mode">kanban,tree,form</field>
+		<field name="domain">[('acting_job_ids','=', active_id)]</field>
+	</record>
+
+	 <record id="view_employee_acting_form" model="ir.ui.view">
+        <field name="name">hr.employee.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form" />
+        <field name="arch" type="xml">
+			 <xpath expr="//field[@name='coach_id']" position="after">
+				 <field name="job_id" position="move"/>
+				<field name="acting_job_ids" widget="many2many_tags" options="{'no_create' : True}" />
+			 </xpath>
+		</field>
+    </record>
+
+	<record id="view_hr_job_form" model="ir.ui.view">
+		<field name="name">hr.job.form</field>
+		<field name="model">hr.job</field>
+		<field name="inherit_id" ref="hr.view_hr_job_form" />
+		<field name="arch" type="xml">
+			<div name="button_box" position="inside">
+                <button class="oe_stat_button"
+                    icon="fa-user-plus"
+                    name="%(action_hr_job_acting_employee)d"
+                    type="action">
+                    <field name="acting_employee_count" widget="statinfo" string="Intérimaire"/>
+                </button>
+			</div>
+		</field>
+	</record>
+
+
+</odoo>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     <record id="nn_view_res_partner_form" model="ir.ui.view">
+            <field name="name">view_partner_form_inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+<!--                add fields-->
+
+                 <xpath expr="//field[@name='name']" position="after">
+                    <group>
+                        <field name="is_customer"/>
+                        <field name="is_supplier"/>
+                    </group>
+                </xpath>
+            </field>
+
+     </record>
+
+    <!-- Inherit Search -->
+        <record id="nn_view_res_partner_filter" model="ir.ui.view">
+            <field name="name">res.partner.search.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='inactive']" position="before">
+                    <filter string="Client" name="customer"
+                            domain="[('is_customer','=',True)]"/>
+                    <filter string="Fournisseur" name="supplier"
+                            domain="[('is_supplier','=',True)]"/>
+                    <separator/>
+                </xpath>
+            </field>
+        </record>
+</odoo>

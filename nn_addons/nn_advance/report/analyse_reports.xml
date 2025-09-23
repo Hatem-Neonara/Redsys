@@ -1,0 +1,24 @@
+<odoo>
+
+    <record id="action_report_etat_avances_mensuelles_xlsx" model="ir.actions.report">
+        <field name="name">Export XLSX État Avances Mensuelles</field>
+        <field name="model">etat.avances.mensuelles</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">nn_advance.etat_avances_mensuelles</field>
+        <field name="report_file">nn_advance.etat_avances_mensuelles</field>
+        <field name="print_report_name">'Etat Avances Mensuelles - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_etat_avances_mensuelles"/>
+        <field name="binding_type">report</field>
+    </record>
+    <report
+            id="action_report_bmg_ordre_virement_xlsx"
+            model="etat.avances.mensuelles"
+            string="Export XLSX État Avances Mensuelles"
+            report_type="xlsx"
+            name="nn_advance.etat_avances_mensuelles"
+            file="nn_advance.etat_avances_mensuelles"
+    />
+
+
+
+</odoo>

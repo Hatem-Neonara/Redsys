@@ -1,0 +1,126 @@
+<odoo>
+
+    <!-- Tree View for EtatAvancesMensuelles -->
+    <record id="view_etat_avances_mensuelles_tree" model="ir.ui.view">
+        <field name="name">etat.avances.mensuelles.tree</field>
+        <field name="model">etat.avances.mensuelles</field>
+        <field name="arch" type="xml">
+            <tree string="État d'Avances Mensuelles">
+                <field name="name"/>
+                <field name="mois"/>
+                <field name="annee"/>
+                <field name="state"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View for EtatAvancesMensuelles -->
+    <record id="view_etat_avances_mensuelles_form" model="ir.ui.view">
+        <field name="name">etat.avances.mensuelles.form</field>
+        <field name="model">etat.avances.mensuelles</field>
+        <field name="arch" type="xml">
+            <form string="État d'Avances Mensuelles">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="generate_avances_lines" type="object" string="Générer les Lignes d'Avances"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="update" type="object" string="Mise à jour"
+                            class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <!-- Button to manually change state to 'confirmed' -->
+                    <button name="action_manual_state_change" type="object" string="Changer l'état en confirmé"
+                            invisible="1"
+                            class="oe_highlight"/>
+                    <button name="%(nn_advance.report_bmg_paie_etat_avances_mensuelles_action)d"
+                            string="Imprimer PDF"
+                            type="action"
+                            class="oe_highlight"/>
+                    <button name="%(nn_advance.action_report_etat_avances_mensuelles_xlsx)d"
+                            string="Exporter Excel"
+                            type="action"
+                            class="oe_highlight"/>
+                     <button name="action_close" type="object" string="Verrouiller"
+                        class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_unlock"
+                        string="Déverrouiller"
+                        type="object"
+                        class="oe_highlight"
+                        invisible ="state != 'close'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="mois"/>
+                        <field name="annee"/>
+                        <field name="is_description_amount_empty" invisible="1"/>
+
+                    </group>
+                    <group>
+                        <field name="employee_id"/>
+                    </group>
+
+                    <!-- Notebook Tab for Avances Lines -->
+                    <notebook>
+                        <page string="Lignes des Avances">
+                            <field name="journal_avances_line_ids">
+                                <tree string="Lignes des Avances" editable="bottom">
+
+                                    <field name="matricule"/>
+                                    <field name="employe_id"/>
+                                    <field name="department"/>
+                                    <field name="date_avance"/>
+                                    <field name="description_amount" digits="[0, 3]" string="Montant Avance"/>
+                                    <field name="date_retenu"/>
+                                    <field name="paye" string="Payé"/>
+                                    <!-- Optional Fields (optional="1" makes them optional) -->
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View for Employee Filter -->
+    <record id="view_etat_avances_mensuelles_search" model="ir.ui.view">
+        <field name="name">etat.avances.mensuelles.search</field>
+        <field name="model">etat.avances.mensuelles</field>
+        <field name="arch" type="xml">
+            <search string="Recherche d'Avances Mensuelles">
+                <field name="name"/>
+                <field name="mois"/>
+                <field name="annee"/>
+                <field name="state"/>
+                <!-- Filter by employee in the lines -->
+                <field name="journal_avances_line_ids" string="Employé" filter_domain="[('journal_avances_line_ids.employe_id', 'ilike', self)]"/>
+                <!-- Add a specific filter for employee -->
+                <filter string="Mes Employés" name="my_employees" domain="[('journal_avances_line_ids.employe_id.user_id', '=', uid)]"/>
+                <!-- Group by options -->
+                <group expand="0" string="Grouper par">
+                    <filter string="Mois" name="group_by_mois" context="{'group_by': 'mois'}"/>
+                    <filter string="Année" name="group_by_annee" context="{'group_by': 'annee'}"/>
+                    <filter string="État" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Action for EtatAvancesMensuelles -->
+    <record id="action_etat_avances_mensuelles_tree" model="ir.actions.act_window">
+        <field name="name">État d'Avances Mensuelles</field>
+        <field name="res_model">etat.avances.mensuelles</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_etat_avances_mensuelles"
+              name="État d'Avances Mensuelles"
+              parent="parent_menu_salary_advance"
+              action="action_etat_avances_mensuelles_tree"
+
+    />
+
+</odoo>

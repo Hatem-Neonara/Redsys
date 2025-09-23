@@ -1,0 +1,62 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* nn_sale
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0-20250220\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-02-21 14:21+0000\n"
+"PO-Revision-Date: 2025-02-21 14:21+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: nn_sale
+#: model:ir.model.fields,field_description:nn_sale.field_product_product__order_partner_id
+#: model:ir.model.fields,field_description:nn_sale.field_product_template__order_partner_id
+msgid "Customer"
+msgstr "Client"
+
+#. module: nn_sale
+#: model_terms:ir.ui.view,arch_db:nn_sale.sale_price_history
+msgid "Last Prices"
+msgstr "Dernier Prix"
+
+#. module: nn_sale
+#: model_terms:ir.ui.view,arch_db:nn_sale.sale_order_line_view_price_history_tree
+msgid "Last Product Prices"
+msgstr "Dernier Prix du Produit"
+
+#. module: nn_sale
+#: model_terms:ir.ui.view,arch_db:nn_sale.sale_price_history
+msgid "Previous Sale"
+msgstr "Derniers Prix"
+
+#. module: nn_sale
+#: model:ir.model,name:nn_sale.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: nn_sale
+#: model_terms:ir.ui.view,arch_db:nn_sale.sale_price_history
+msgid "Product Sales Price History"
+msgstr "Historique Prix de Vente"
+
+#. module: nn_sale
+#: model:ir.model.fields,field_description:nn_sale.field_sale_order_line__sale_date
+msgid "Sale Date"
+msgstr "Date Commande"
+
+#. module: nn_sale
+#: model:ir.model.fields,help:nn_sale.field_sale_order_line__sale_date
+msgid "Sale Order date"
+msgstr "Date Commande"
+
+#. module: nn_sale
+#: model:ir.model,name:nn_sale.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Ligne de commande"

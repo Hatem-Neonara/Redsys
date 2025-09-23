@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record
+                id="res_config_settings_view_purchase_history" model="ir.ui.view">
+            <field name="name">res.config.settings.purchase.history</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+            <field name="arch" type="xml">
+                <xpath expr="//app/block[@name='matrix_setting_container']" position="after">
+                    <block title="Purchase Price History" id="purchase_price_history_setting">
+                        <setting id="purchase_price_history_connector">
+                            <div>
+                                <label string="Record Limit" for="purchase_order_line_record_limit"/>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="purchase_order_line_record_limit" class="o_light_label"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="purchase_price_history_connector_rigth">
+                            <div>
+                                <label string="Show Price History Based on" for="purchase_order_status"/>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="purchase_order_status" class="o_light_label" widget="radio"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="purchase_price_history" model="ir.ui.view">
+            <field name="name">purchase.price.history</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Purchase Price History" invisible="purchase_ok == False">
+
+                        <group>
+                            <field name="order_partner_id"/>
+                        </group>
+                        <group>
+                            <button name="action_purchase_product_prices" string="Previous Purchase Rates"
+                                    help="Last Prices" type="object"/>
+                        </group>
+
+                        <field name="purchase_price_history_ids" nolabel="1" mode="tree,kanban">
+                            <tree>
+                                <field name="product_tmpl_id"/>
+                                <field name="variant_id"/>
+                                <field name="purchase_order_id"/>
+                                <field name="purchase_order_date"/>
+                                <field name="partner_id"/>
+                                <field name="user_id"/>
+                                <field name="product_uom_qty"/>
+                                <field name="unit_price"/>
+                                <field name="total_price"/>
+
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+         <!--    Inherited to add button to view product form-->
+    <record id="purchase_order_price_history_form" model="ir.ui.view">
+        <field name="name">purchase.order.form.purchase.previous.product.cost</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']"
+                   position="before">
+                <button name="action_get_product_form" type="object"
+                        title="History"
+                        icon="fa-external-link" string=""/>
+            </xpath>
+        </field>
+    </record>
+
+         <!--To view last Sale or purchase details like price-->
+    <record id="purchase_order_line_view_price_history_tree" model="ir.ui.view">
+        <field name="name">purchase.order.line.view.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field name="priority" eval="40"/>
+        <field name="arch" type="xml">
+            <tree string="Last Product Prices">
+                <field name="order_id"/>
+                <field name="partner_id"/>
+                <field name="purchase_date"/>
+                <field name="product_id"/>
+                <field name="product_qty"/>
+                <field name="price_unit"/>
+                <field name="price_subtotal"/>
+            </tree>
+        </field>
+    </record>
+
+    </data>
+</odoo>

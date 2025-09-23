@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--Accountig Menu -->
+    <menuitem id="accounting_menu_root" sequence="114"
+              name="Finance and Accounting"
+              web_icon="base_accounting_kit,static/description/icon-menu.png"/>
+
+    <menuitem id="accounting_menu_finance" sequence="10"
+              name="Finance"
+              parent="accounting_menu_root"/>
+
+    <menuitem id="accounting_menu_payment" sequence="15"
+              name="Payment"
+              parent="accounting_menu_root"/>
+
+    <menuitem id="accounting_menu_accounting" sequence="20"
+              name="Accounting"
+              parent="accounting_menu_root"/>
+
+    <menuitem id="accounting_menu_report" sequence="30"
+              name="Accounting Report"
+              parent="accounting_menu_root"/>
+
+     <menuitem id="account_reports_audit" sequence="40"
+              name="Audit Reports" parent="accounting_menu_root"/>
+
+    <menuitem id="accounting_menu_setting" sequence="100"
+              name="Setting"
+              parent="accounting_menu_root"/>
+    <!---->
+
+    <menuitem id="account_reports_generic_statements" sequence="20"
+              name="Generic Statements"
+              parent="base_accounting_kit.accounting_menu_report"/>
+
+    <menuitem id="account_reports_daily_reports" sequence="10"
+              name="Daily Reports" parent="accounting_menu_report"/>
+
+    <menuitem id="account_reports_partner" sequence="20"
+              name="Partner Reports" parent="accounting_menu_report"/>
+
+
+    <!--    Change from module acocunt     -->
+
+    <menuitem id="menu_finance_entries_accounting_miscellaneous" name="Journals"
+              parent="accounting_menu_accounting" sequence="1">
+        <menuitem id="menu_action_move_journal_line_form" action="account.action_move_journal_line"
+                  groups="account.group_account_readonly" sequence="1"/>
+        <menuitem id="menu_action_account_moves_all" action="account.action_account_moves_all"
+                  groups="account.group_account_readonly" sequence="10"/>
+    </menuitem>
+
+    <menuitem id="menu_finance_entries_management" name="Management" sequence="10"
+              groups="account.group_account_invoice,account.group_account_readonly"
+              parent="accounting_menu_accounting">
+        <menuitem id="menu_action_analytic_lines_tree" name="Analytic Items"
+                  action="analytic.account_analytic_line_action_entries" groups="analytic.group_analytic_accounting"
+                  sequence="50"/>
+    </menuitem>
+
+
+    <menuitem id="menu_action_analytic_reporting" name="Analytic Reporting" action="account.action_analytic_reporting"
+              groups="analytic.group_analytic_accounting" parent="accounting_menu_accounting"/>
+
+
+</odoo>
